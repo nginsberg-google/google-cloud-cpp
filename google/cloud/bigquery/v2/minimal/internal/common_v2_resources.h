@@ -43,6 +43,7 @@ struct ErrorProto {
 };
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(ErrorProto, reason, location,
                                                 message);
+bool operator==(ErrorProto const& lhs, ErrorProto const& rhs);
 
 struct TableReference {
   std::string project_id;
@@ -53,8 +54,8 @@ struct TableReference {
                           TracingOptions const& options = {},
                           int indent = 0) const;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(TableReference, project_id,
-                                                dataset_id, table_id);
+void to_json(nlohmann::json& j, TableReference const& t);
+void from_json(nlohmann::json const& j, TableReference& t);
 bool operator==(TableReference const& lhs, TableReference const& rhs);
 
 struct DatasetReference {
@@ -65,8 +66,8 @@ struct DatasetReference {
                           TracingOptions const& options = {},
                           int indent = 0) const;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(DatasetReference, project_id,
-                                                dataset_id);
+void to_json(nlohmann::json& j, DatasetReference const& d);
+void from_json(nlohmann::json const& j, DatasetReference& d);
 bool operator==(DatasetReference const& lhs, DatasetReference const& rhs);
 
 struct RoutineReference {
@@ -78,8 +79,8 @@ struct RoutineReference {
                           TracingOptions const& options = {},
                           int indent = 0) const;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(RoutineReference, dataset_id,
-                                                project_id, routine_id);
+void to_json(nlohmann::json& j, RoutineReference const& r);
+void from_json(nlohmann::json const& j, RoutineReference& r);
 bool operator==(RoutineReference const& lhs, RoutineReference const& rhs);
 
 struct RoundingMode {
@@ -109,6 +110,7 @@ struct ConnectionProperty {
                           int indent = 0) const;
 };
 NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(ConnectionProperty, key, value);
+bool operator==(ConnectionProperty const& lhs, ConnectionProperty const& rhs);
 
 // Describes the encryption key used to protect the BigQuery destination table.
 //
@@ -121,8 +123,8 @@ struct EncryptionConfiguration {
                           TracingOptions const& options = {},
                           int indent = 0) const;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(EncryptionConfiguration,
-                                                kms_key_name);
+void to_json(nlohmann::json& j, EncryptionConfiguration const& ec);
+void from_json(nlohmann::json const& j, EncryptionConfiguration& ec);
 
 // Used in ScriptOptions to control the execution of script.
 // Determines which statement in the script represents the "key result",
@@ -158,10 +160,8 @@ struct ScriptOptions {
                           TracingOptions const& options = {},
                           int indent = 0) const;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(ScriptOptions,
-                                                statement_timeout_ms,
-                                                statement_byte_budget,
-                                                key_result_statement);
+void to_json(nlohmann::json& j, ScriptOptions const& s);
+void from_json(nlohmann::json const& j, ScriptOptions& s);
 
 // Represents a GoogleSQL Data Type.
 //
@@ -311,6 +311,7 @@ struct Struct {
 };
 void to_json(nlohmann::json& j, Struct const& s);
 void from_json(nlohmann::json const& j, Struct& s);
+bool operator==(Struct const& lhs, Struct const& rhs);
 
 // Represents the system variables that can be given to a query job.
 // System variables can be used to check information during query execution.
@@ -355,7 +356,6 @@ struct QueryParameterType {
                           TracingOptions const& options = {},
                           int indent = 0) const;
 };
-
 void to_json(nlohmann::json& j, QueryParameterType const& q);
 void from_json(nlohmann::json const& j, QueryParameterType& q);
 
@@ -368,7 +368,6 @@ struct QueryParameterValue {
                           TracingOptions const& options = {},
                           int indent = 0) const;
 };
-
 void to_json(nlohmann::json& j, QueryParameterValue const& q);
 void from_json(nlohmann::json const& j, QueryParameterValue& q);
 
@@ -381,9 +380,8 @@ struct QueryParameter {
                           TracingOptions const& options = {},
                           int indent = 0) const;
 };
-NLOHMANN_DEFINE_TYPE_NON_INTRUSIVE_WITH_DEFAULT(QueryParameter, name,
-                                                parameter_type,
-                                                parameter_value);
+void to_json(nlohmann::json& j, QueryParameter const& q);
+void from_json(nlohmann::json const& j, QueryParameter& q);
 bool operator==(QueryParameter const& lhs, QueryParameter const& rhs);
 // NOLINTEND(misc-no-recursion)
 

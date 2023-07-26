@@ -148,9 +148,8 @@ target_include_directories(
            $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}>
            $<INSTALL_INTERFACE:include>)
 target_link_libraries(
-    google_cloud_cpp_bigquery_rest
-    PUBLIC google-cloud-cpp::rest_internal google-cloud-cpp::grpc_utils
-           google-cloud-cpp::common)
+    google_cloud_cpp_bigquery_rest PUBLIC google-cloud-cpp::rest_internal
+                                          google-cloud-cpp::common)
 google_cloud_cpp_add_common_options(google_cloud_cpp_bigquery_rest)
 set_target_properties(
     google_cloud_cpp_bigquery_rest
@@ -209,6 +208,8 @@ function (bigquery_rest_define_tests)
         INTERFACE
             ${CMAKE_CURRENT_SOURCE_DIR}/v2/minimal/testing/common_v2_test_utils.cc
             ${CMAKE_CURRENT_SOURCE_DIR}/v2/minimal/testing/common_v2_test_utils.h
+            ${CMAKE_CURRENT_SOURCE_DIR}/v2/minimal/testing/job_query_test_utils.cc
+            ${CMAKE_CURRENT_SOURCE_DIR}/v2/minimal/testing/job_query_test_utils.h
             ${CMAKE_CURRENT_SOURCE_DIR}/v2/minimal/testing/job_test_utils.cc
             ${CMAKE_CURRENT_SOURCE_DIR}/v2/minimal/testing/job_test_utils.h
             ${CMAKE_CURRENT_SOURCE_DIR}/v2/minimal/testing/metadata_test_utils.cc
@@ -361,7 +362,7 @@ google_cloud_cpp_install_headers("google_cloud_cpp_bigquery_rest_mocks"
 google_cloud_cpp_add_pkgconfig(
     bigquery_rest "Experimental BigQuery REST client library"
     "An experimental BigQuery C++ client library using REST for transport."
-    " google_cloud_cpp_rest_internal")
+    "google_cloud_cpp_rest_internal")
 
 # Create and install the CMake configuration files.
 include(CMakePackageConfigHelpers)

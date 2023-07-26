@@ -44,11 +44,11 @@ def google_cloud_cpp_development_deps(name = None):
         http_archive,
         name = "com_google_benchmark",
         urls = [
-            "https://storage.googleapis.com/cloud-cpp-community-archive/com_google_benchmark/v1.8.0.tar.gz",
-            "https://github.com/google/benchmark/archive/v1.8.0.tar.gz",
+            "https://storage.googleapis.com/cloud-cpp-community-archive/com_google_benchmark/v1.8.2.tar.gz",
+            "https://github.com/google/benchmark/archive/v1.8.2.tar.gz",
         ],
-        sha256 = "ea2e94c24ddf6594d15c711c06ccd4486434d9cf3eca954e2af8a20c88f9f172",
-        strip_prefix = "benchmark-1.8.0",
+        sha256 = "2aab2980d0376137f969d92848fbb68216abb07633034534fc8c65cc4e7a0e93",
+        strip_prefix = "benchmark-1.8.2",
     )
 
     # PugiXML, this is only used in the docfx internal tool.
@@ -142,11 +142,11 @@ def google_cloud_cpp_deps(name = None):
         http_archive,
         name = "com_google_googleapis",
         urls = [
-            "https://storage.googleapis.com/cloud-cpp-community-archive/com_google_googleapis/a3f983b38c357a1e7a7810d9ad795756b77d4332.tar.gz",
-            "https://github.com/googleapis/googleapis/archive/a3f983b38c357a1e7a7810d9ad795756b77d4332.tar.gz",
+            "https://storage.googleapis.com/cloud-cpp-community-archive/com_google_googleapis/a2223b18ac65e81c1dbc6c7d6785043799ae10b6.tar.gz",
+            "https://github.com/googleapis/googleapis/archive/a2223b18ac65e81c1dbc6c7d6785043799ae10b6.tar.gz",
         ],
-        sha256 = "edc901180a3ebdd4b3b3086e7df2ca71f947433ebeb827796447c57491fb334e",
-        strip_prefix = "googleapis-a3f983b38c357a1e7a7810d9ad795756b77d4332",
+        sha256 = "daba312861e264170d0a392beb48e95ce42a9177c57c29d63651b4579a2a1f3e",
+        strip_prefix = "googleapis-a2223b18ac65e81c1dbc6c7d6785043799ae10b6",
         build_file = Label("//bazel:googleapis.BUILD"),
         # Scaffolding for patching googleapis after download. For example:
         #   patches = ["googleapis.patch"]
@@ -163,11 +163,11 @@ def google_cloud_cpp_deps(name = None):
         http_archive,
         name = "com_google_protobuf",
         urls = [
-            "https://storage.googleapis.com/cloud-cpp-community-archive/com_google_protobuf/v23.3.tar.gz",
-            "https://github.com/protocolbuffers/protobuf/archive/v23.3.tar.gz",
+            "https://storage.googleapis.com/cloud-cpp-community-archive/com_google_protobuf/v23.4.tar.gz",
+            "https://github.com/protocolbuffers/protobuf/archive/v23.4.tar.gz",
         ],
-        sha256 = "4e176116949be52b0408dfd24f8925d1eb674a781ae242a75296b17a1c721395",
-        strip_prefix = "protobuf-23.3",
+        sha256 = "a700a49470d301f1190a487a923b5095bf60f08f4ae4cac9f5f7c36883d17971",
+        strip_prefix = "protobuf-23.4",
     )
 
     # Load BoringSSL. This could be automatically loaded by gRPC. But as of
@@ -191,11 +191,11 @@ def google_cloud_cpp_deps(name = None):
         http_archive,
         name = "com_github_grpc_grpc",
         urls = [
-            "https://storage.googleapis.com/cloud-cpp-community-archive/com_github_grpc_grpc/v1.56.0.tar.gz",
-            "https://github.com/grpc/grpc/archive/v1.56.0.tar.gz",
+            "https://storage.googleapis.com/cloud-cpp-community-archive/com_github_grpc_grpc/v1.56.2.tar.gz",
+            "https://github.com/grpc/grpc/archive/v1.56.2.tar.gz",
         ],
-        sha256 = "e034992a0b464042021f6d440f2090acc2422c103a322b0844e3921ccea981dc",
-        strip_prefix = "grpc-1.56.0",
+        sha256 = "931f07db9d48cff6a6007c1033ba6d691fe655bea2765444bc1ad974dfc840aa",
+        strip_prefix = "grpc-1.56.2",
     )
 
     # We use the cc_proto_library() rule from @com_google_protobuf, which

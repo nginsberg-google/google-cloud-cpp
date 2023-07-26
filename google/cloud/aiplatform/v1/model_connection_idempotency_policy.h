@@ -20,7 +20,6 @@
 #define GOOGLE_CLOUD_CPP_GOOGLE_CLOUD_AIPLATFORM_V1_MODEL_CONNECTION_IDEMPOTENCY_POLICY_H
 
 #include "google/cloud/idempotency.h"
-#include "google/cloud/internal/retry_policy.h"
 #include "google/cloud/version.h"
 #include <google/cloud/aiplatform/v1/model_service.grpc.pb.h>
 #include <memory>
@@ -52,6 +51,10 @@ class ModelServiceConnectionIdempotencyPolicy {
 
   virtual google::cloud::Idempotency UpdateModel(
       google::cloud::aiplatform::v1::UpdateModelRequest const& request);
+
+  virtual google::cloud::Idempotency UpdateExplanationDataset(
+      google::cloud::aiplatform::v1::UpdateExplanationDatasetRequest const&
+          request);
 
   virtual google::cloud::Idempotency DeleteModel(
       google::cloud::aiplatform::v1::DeleteModelRequest const& request);

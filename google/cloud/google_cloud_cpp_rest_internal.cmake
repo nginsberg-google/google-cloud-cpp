@@ -116,6 +116,11 @@ target_link_libraries(
     google_cloud_cpp_rest_internal
     PUBLIC absl::span google-cloud-cpp::common CURL::libcurl
            nlohmann_json::nlohmann_json OpenSSL::SSL OpenSSL::Crypto)
+if (WIN32)
+    # We use `setsockopt()` directly, which requires the ws2_32 (Winsock2 for
+    # Windows32?) library on Windows.
+    target_link_libraries(google_cloud_cpp_rest_internal PUBLIC ws2_32)
+endif ()
 google_cloud_cpp_add_common_options(google_cloud_cpp_rest_internal)
 target_include_directories(
     google_cloud_cpp_rest_internal
@@ -165,7 +170,7 @@ google_cloud_cpp_install_headers(google_cloud_cpp_rest_internal
 google_cloud_cpp_add_pkgconfig(
     rest_internal "REST library for the Google Cloud C++ Client Library"
     "Provides REST Transport for the Google Cloud C++ Client Library."
-    "google_cloud_cpp_common" " libcurl" " openssl")
+    "google_cloud_cpp_common" "libcurl" "openssl")
 
 # Create and install the CMake configuration files.
 include(CMakePackageConfigHelpers)
@@ -244,7 +249,6 @@ if (BUILD_TESTING)
         internal/oauth2_minimal_iam_credentials_rest_test.cc
         internal/oauth2_refreshing_credentials_wrapper_test.cc
         internal/oauth2_service_account_credentials_test.cc
-        internal/openssl_util_test.cc
         internal/rest_context_test.cc
         internal/rest_opentelemetry_test.cc
         internal/rest_parse_json_error_test.cc

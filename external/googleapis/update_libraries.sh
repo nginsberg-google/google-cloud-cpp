@@ -128,8 +128,11 @@ declare -A -r LIBRARIES=(
       "@com_google_googleapis//google/cloud/eventarc/publishing/v1:publishing_cc_grpc"
   )"
   ["filestore"]="@com_google_googleapis//google/cloud/filestore/v1:filestore_cc_grpc"
-  ["functions"]="@com_google_googleapis//google/cloud/functions/v1:functions_cc_grpc"
-  ["gameservices"]="@com_google_googleapis//google/cloud/gaming/v1:gaming_cc_grpc"
+  ["functions"]="$(
+    printf ",%s" \
+      "@com_google_googleapis//google/cloud/functions/v1:functions_cc_grpc" \
+      "@com_google_googleapis//google/cloud/functions/v2:functions_cc_grpc"
+  )"
   ["gkebackup"]="$(
     printf ",%s" \
       "@com_google_googleapis//google/cloud/gkebackup/logging/v1:logging_cc_grpc" \
@@ -176,6 +179,7 @@ declare -A -r LIBRARIES=(
       "@com_google_googleapis//google/cloud/metastore/logging/v1:logging_cc_grpc" \
       "@com_google_googleapis//google/cloud/metastore/v1:metastore_cc_grpc"
   )"
+  ["migrationcenter"]="@com_google_googleapis//google/cloud/migrationcenter/v1:migrationcenter_cc_grpc"
   ["monitoring"]="$(
     printf ",%s" \
       "@com_google_googleapis//google/monitoring/v3:monitoring_cc_grpc" \
@@ -204,6 +208,7 @@ declare -A -r LIBRARIES=(
   ["profiler"]="@com_google_googleapis//google/devtools/cloudprofiler/v2:cloudprofiler_cc_grpc"
   ["pubsub"]="@com_google_googleapis//google/pubsub/v1:pubsub_cc_grpc"
   ["pubsublite"]="@com_google_googleapis//google/cloud/pubsublite/v1:pubsublite_cc_grpc"
+  ["rapidmigrationassessment"]="@com_google_googleapis//google/cloud/rapidmigrationassessment/v1:rapidmigrationassessment_cc_grpc"
   ["recaptchaenterprise"]="@com_google_googleapis//google/cloud/recaptchaenterprise/v1:recaptchaenterprise_cc_grpc"
   ["recommender"]="$(
     printf ",%s" \

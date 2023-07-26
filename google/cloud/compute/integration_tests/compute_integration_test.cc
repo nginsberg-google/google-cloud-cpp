@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "google/cloud/compute/disks/v1/disks_client.h"
+#include "google/cloud/internal/absl_str_cat_quiet.h"
 #include "google/cloud/internal/getenv.h"
 #include "google/cloud/internal/parse_rfc3339.h"
 #include "google/cloud/internal/random.h"
@@ -32,8 +33,6 @@ using ::google::cloud::testing_util::IsOk;
 using ::google::cloud::testing_util::StatusIs;
 using ::testing::Eq;
 using ::testing::HasSubstr;
-using ::testing::IsEmpty;
-using ::testing::Not;
 
 class ComputeIntegrationTest
     : public ::google::cloud::testing_util::IntegrationTest {

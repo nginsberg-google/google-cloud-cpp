@@ -37,7 +37,7 @@ class TensorboardServiceLogging : public TensorboardServiceStub {
   ~TensorboardServiceLogging() override = default;
   TensorboardServiceLogging(std::shared_ptr<TensorboardServiceStub> child,
                             TracingOptions tracing_options,
-                            std::set<std::string> components);
+                            std::set<std::string> const& components);
 
   future<StatusOr<google::longrunning::Operation>> AsyncCreateTensorboard(
       google::cloud::CompletionQueue& cq,
@@ -48,12 +48,6 @@ class TensorboardServiceLogging : public TensorboardServiceStub {
   StatusOr<google::cloud::aiplatform::v1::Tensorboard> GetTensorboard(
       grpc::ClientContext& context,
       google::cloud::aiplatform::v1::GetTensorboardRequest const& request)
-      override;
-
-  StatusOr<google::cloud::aiplatform::v1::ReadTensorboardUsageResponse>
-  ReadTensorboardUsage(
-      grpc::ClientContext& context,
-      google::cloud::aiplatform::v1::ReadTensorboardUsageRequest const& request)
       override;
 
   future<StatusOr<google::longrunning::Operation>> AsyncUpdateTensorboard(
@@ -71,6 +65,12 @@ class TensorboardServiceLogging : public TensorboardServiceStub {
       google::cloud::CompletionQueue& cq,
       std::shared_ptr<grpc::ClientContext> context,
       google::cloud::aiplatform::v1::DeleteTensorboardRequest const& request)
+      override;
+
+  StatusOr<google::cloud::aiplatform::v1::ReadTensorboardUsageResponse>
+  ReadTensorboardUsage(
+      grpc::ClientContext& context,
+      google::cloud::aiplatform::v1::ReadTensorboardUsageRequest const& request)
       override;
 
   StatusOr<google::cloud::aiplatform::v1::TensorboardExperiment>
@@ -228,7 +228,7 @@ class TensorboardServiceLogging : public TensorboardServiceStub {
  private:
   std::shared_ptr<TensorboardServiceStub> child_;
   TracingOptions tracing_options_;
-  std::set<std::string> components_;
+  bool stream_logging_;
 };  // TensorboardServiceLogging
 
 GOOGLE_CLOUD_CPP_INLINE_NAMESPACE_END

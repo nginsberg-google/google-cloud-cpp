@@ -29,10 +29,10 @@ GOOGLE_CLOUD_CPP_INLINE_NAMESPACE_BEGIN
 
 DatasetServiceLogging::DatasetServiceLogging(
     std::shared_ptr<DatasetServiceStub> child, TracingOptions tracing_options,
-    std::set<std::string> components)
+    std::set<std::string> const& components)
     : child_(std::move(child)),
       tracing_options_(std::move(tracing_options)),
-      components_(std::move(components)) {}
+      stream_logging_(components.find("rpc-streams") != components.end()) {}
 
 future<StatusOr<google::longrunning::Operation>>
 DatasetServiceLogging::AsyncCreateDataset(
@@ -165,6 +165,21 @@ DatasetServiceLogging::ListSavedQueries(
         return child_->ListSavedQueries(context, request);
       },
       context, request, __func__, tracing_options_);
+}
+
+future<StatusOr<google::longrunning::Operation>>
+DatasetServiceLogging::AsyncDeleteSavedQuery(
+    google::cloud::CompletionQueue& cq,
+    std::shared_ptr<grpc::ClientContext> context,
+    google::cloud::aiplatform::v1::DeleteSavedQueryRequest const& request) {
+  return google::cloud::internal::LogWrapper(
+      [this](google::cloud::CompletionQueue& cq,
+             std::shared_ptr<grpc::ClientContext> context,
+             google::cloud::aiplatform::v1::DeleteSavedQueryRequest const&
+                 request) {
+        return child_->AsyncDeleteSavedQuery(cq, std::move(context), request);
+      },
+      cq, std::move(context), request, __func__, tracing_options_);
 }
 
 StatusOr<google::cloud::aiplatform::v1::AnnotationSpec>

@@ -20,7 +20,6 @@
 #define GOOGLE_CLOUD_CPP_GOOGLE_CLOUD_AIPLATFORM_V1_TENSORBOARD_CONNECTION_IDEMPOTENCY_POLICY_H
 
 #include "google/cloud/idempotency.h"
-#include "google/cloud/internal/retry_policy.h"
 #include "google/cloud/version.h"
 #include <google/cloud/aiplatform/v1/tensorboard_service.grpc.pb.h>
 #include <memory>
@@ -44,10 +43,6 @@ class TensorboardServiceConnectionIdempotencyPolicy {
   virtual google::cloud::Idempotency GetTensorboard(
       google::cloud::aiplatform::v1::GetTensorboardRequest const& request);
 
-  virtual google::cloud::Idempotency ReadTensorboardUsage(
-      google::cloud::aiplatform::v1::ReadTensorboardUsageRequest const&
-          request);
-
   virtual google::cloud::Idempotency UpdateTensorboard(
       google::cloud::aiplatform::v1::UpdateTensorboardRequest const& request);
 
@@ -56,6 +51,10 @@ class TensorboardServiceConnectionIdempotencyPolicy {
 
   virtual google::cloud::Idempotency DeleteTensorboard(
       google::cloud::aiplatform::v1::DeleteTensorboardRequest const& request);
+
+  virtual google::cloud::Idempotency ReadTensorboardUsage(
+      google::cloud::aiplatform::v1::ReadTensorboardUsageRequest const&
+          request);
 
   virtual google::cloud::Idempotency CreateTensorboardExperiment(
       google::cloud::aiplatform::v1::CreateTensorboardExperimentRequest const&

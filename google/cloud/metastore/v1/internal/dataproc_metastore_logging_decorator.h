@@ -37,7 +37,7 @@ class DataprocMetastoreLogging : public DataprocMetastoreStub {
   ~DataprocMetastoreLogging() override = default;
   DataprocMetastoreLogging(std::shared_ptr<DataprocMetastoreStub> child,
                            TracingOptions tracing_options,
-                           std::set<std::string> components);
+                           std::set<std::string> const& components);
 
   StatusOr<google::cloud::metastore::v1::ListServicesResponse> ListServices(
       grpc::ClientContext& context,
@@ -121,6 +121,25 @@ class DataprocMetastoreLogging : public DataprocMetastoreStub {
       google::cloud::metastore::v1::DeleteBackupRequest const& request)
       override;
 
+  future<StatusOr<google::longrunning::Operation>> AsyncQueryMetadata(
+      google::cloud::CompletionQueue& cq,
+      std::shared_ptr<grpc::ClientContext> context,
+      google::cloud::metastore::v1::QueryMetadataRequest const& request)
+      override;
+
+  future<StatusOr<google::longrunning::Operation>> AsyncMoveTableToDatabase(
+      google::cloud::CompletionQueue& cq,
+      std::shared_ptr<grpc::ClientContext> context,
+      google::cloud::metastore::v1::MoveTableToDatabaseRequest const& request)
+      override;
+
+  future<StatusOr<google::longrunning::Operation>>
+  AsyncAlterMetadataResourceLocation(
+      google::cloud::CompletionQueue& cq,
+      std::shared_ptr<grpc::ClientContext> context,
+      google::cloud::metastore::v1::AlterMetadataResourceLocationRequest const&
+          request) override;
+
   future<StatusOr<google::longrunning::Operation>> AsyncGetOperation(
       google::cloud::CompletionQueue& cq,
       std::shared_ptr<grpc::ClientContext> context,
@@ -134,7 +153,7 @@ class DataprocMetastoreLogging : public DataprocMetastoreStub {
  private:
   std::shared_ptr<DataprocMetastoreStub> child_;
   TracingOptions tracing_options_;
-  std::set<std::string> components_;
+  bool stream_logging_;
 };  // DataprocMetastoreLogging
 
 GOOGLE_CLOUD_CPP_INLINE_NAMESPACE_END

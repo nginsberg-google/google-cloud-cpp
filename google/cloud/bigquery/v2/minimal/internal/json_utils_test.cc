@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "google/cloud/bigquery/v2/minimal/internal/json_utils.h"
+#include "google/cloud/bigquery/v2/minimal/internal/common_v2_resources.h"
 #include "google/cloud/testing_util/status_matchers.h"
 #include <gmock/gmock.h>
 
@@ -20,6 +21,8 @@ namespace google {
 namespace cloud {
 namespace bigquery_v2_minimal_internal {
 GOOGLE_CLOUD_CPP_INLINE_NAMESPACE_BEGIN
+
+using ::testing::IsEmpty;
 
 TEST(JsonUtilsTest, FromJsonMilliseconds) {
   auto const* const name = "start_time";
@@ -98,6 +101,51 @@ TEST(JsonUtilsTest, ToJsonTimepoint) {
   EXPECT_EQ(expected_json, actual_json);
 }
 
+TEST(JsonUtilsTest, SafeGetToKeyPresent) {
+  auto const* const key = "project_id";
+  auto const* json_text = R"({"project_id":"123"})";
+  auto json = nlohmann::json::parse(json_text, nullptr, false);
+  EXPECT_TRUE(json.is_object());
+
+  std::string val;
+  SafeGetTo(val, json, key);
+
+  EXPECT_EQ(val, "123");
+}
+
+TEST(JsonUtilsTest, SafeGetToKeyAbsent) {
+  auto const* const key = "job_id";
+  auto const* json_text = R"({"project_id":"123"})";
+  auto json = nlohmann::json::parse(json_text, nullptr, false);
+  EXPECT_TRUE(json.is_object());
+
+  std::string val;
+  SafeGetTo(val, json, key);
+
+  EXPECT_THAT(val, IsEmpty());
+}
+
+TEST(JsonUtilsTest, SafeGetToCustomType) {
+  auto const* const key = "error_result";
+  auto const* json_text =
+      R"({"error_result":{
+    "reason":"testing",
+    "location":"us-east",
+    "message":"testing"
+  }})";
+  auto json = nlohmann::json::parse(json_text, nullptr, false);
+  EXPECT_TRUE(json.is_object());
+
+  ErrorProto actual;
+  SafeGetTo(actual, json, key);
+
+  ErrorProto expected;
+  expected.reason = "testing";
+  expected.location = "us-east";
+  expected.message = "testing";
+
+  EXPECT_EQ(expected, actual);
+}
 GOOGLE_CLOUD_CPP_INLINE_NAMESPACE_END
 }  // namespace bigquery_v2_minimal_internal
 }  // namespace cloud

@@ -108,7 +108,54 @@ info, see [#7463] and [#5976].
 
 </details>
 
-## v2.13.0 - TBD
+## v2.14.0 - TBD
+
+### [Channel Services](/google/cloud/channel/README.md)
+
+The library has been expanded to include the Reporting API.
+
+### [Cloud Monitoring](/google/cloud/monitoring/README.md)
+
+The library has been expanded to include the [Snooze][monitoring-snooze] API.
+
+### [Cloud Functions](/google/cloud/functions/README.md)
+
+The library has been expanded to include the [2nd gen][functions-v2] API.
+
+### [Cloud Run](/google/cloud/run/README.md)
+
+The library has been expanded to include the
+[Job Executions][cloud-run-jobs] API.
+
+### [Compute Engine OS Config](/google/cloud/osconfig/README.md)
+
+The library has been expanded to include the Zonal OS Config API.
+
+### [Dataproc](/google/cloud/dataproc/README.md)
+
+The library has been expanded to include the [Node Groups][dataproc-node-groups]
+API.
+
+### [Logging](/google/cloud/logging/README.md)
+
+The library has been expanded to include the
+[Log-based Metrics][logging-metrics] API and the [Log Router][logging-config]
+API.
+
+### [Retail](/google/cloud/retail/README.md)
+
+The library has been expanded to include new services.
+
+### [Resource Manager](/google/cloud/resourcemanager/README.md)
+
+The library has been expanded to include the [Tags][resource-manager-tags] API.
+
+### [Speech](/google/cloud/speech/README.md)
+
+The library has been expanded to include the
+[Model Adaptation][speech-model-adaptation] API.
+
+## v2.13.0 - 2023-07
 
 ### New Libraries
 
@@ -117,7 +164,26 @@ the APIs in these libraries are stable, and are ready for production use.
 
 - [Cloud Data Fusion](/google/cloud/datafusion/README.md)
 - [Dataproc Metastore](/google/cloud/metastore/README.md)
+- [Migration Center](google/cloud/migrationcenter/README.md)
+- [Rapid Migration Assessment](/google/cloud/rapidmigrationassessment/README.md)
 - [Secure Web Proxy](/google/cloud/networksecurity/README.md)
+
+### [Batch](/google/cloud/batch/README.md)
+
+- docs: an example to extract Cloud Batch logs ([#11935](https://github.com/googleapis/google-cloud-cpp/pull/11935))
+- docs(batch): introduce basic snippets ([#11915](https://github.com/googleapis/google-cloud-cpp/pull/11915))
+
+### [Spanner](/google/cloud/spanner/README.md)
+
+- doc(spanner): add an example for CommitAtLeastOnce() ([#11905](https://github.com/googleapis/google-cloud-cpp/pull/11905))
+- feat(spanner): implement at-least-once Commit ([#11899](https://github.com/googleapis/google-cloud-cpp/pull/11899))
+
+### [Common Libraries](/google/cloud/README.md)
+
+- feat(generator): separate page for retry policy overrides ([#11950](https://github.com/googleapis/google-cloud-cpp/pull/11950))
+- fix(common): pagination must support empty pages ([#11937](https://github.com/googleapis/google-cloud-cpp/pull/11937))
+- feat(generator): create retry policy samples ([#11930](https://github.com/googleapis/google-cloud-cpp/pull/11930))
+- fix(common): use 64-bit API on Windows to get file sizes ([#11906](https://github.com/googleapis/google-cloud-cpp/pull/11906))
 
 ## v2.12.0 - 2023-06
 
@@ -3626,6 +3692,9 @@ releases.  The relevant notes are:
 [cloud bigtable admin api]: https://cloud.google.com/bigtable/docs/reference/admin/rpc
 [cloud tasks]: /google/cloud/tasks/README.md
 [cloud-debugger-deprecated]: https://cloud.google.com/debugger/docs/deprecations
+[cloud-run-jobs]: https://cloud.google.com/run/docs/managing/job-executions
+[dataproc-node-groups]: https://cloud.google.com/dataproc/docs/guides/node-groups/dataproc-driver-node-groups
+[functions-v2]: https://cloud.google.com/functions/docs/concepts/version-comparison
 [github-cpp-common]: https://github.com/googleapis/google-cloud-cpp-common
 [google.pubsub.v1.schemaserviceclient]: https://cloud.google.com/pubsub/docs/reference/rpc/google.pubsub.v1#google.pubsub.v1.SchemaService
 [guac-dox]: https://cloud.google.com/cpp/docs/reference/common/latest/group__guac
@@ -3633,13 +3702,18 @@ releases.  The relevant notes are:
 [iam-conditions-link]: https://cloud.google.com/iam/docs/conditions-overview
 [iam-policy-link]: https://cloud.google.com/iam/docs/manage-access-other-resources
 [issue-2567]: https://github.com/googleapis/google-cloud-cpp/issues/2567
+[logging-config]: https://cloud.google.com/logging/docs/routing/overview
+[logging-metrics]: https://cloud.google.com/logging/docs/logs-based-metrics
 [modern-table-ctor]: https://github.com/googleapis/google-cloud-cpp/blob/62740c8e9180056db77d4dd3e80a6fa7ae71295a/google/cloud/bigtable/table.h#L182-L214
+[monitoring-snooze]: https://cloud.google.com/monitoring/alerts/snooze
 [nlohmann-json-gh]: https://github.com/nlohmann/json.git
 [oss-cxx-support]: https://opensource.google/documentation/policies/cplusplus-support
 [product-launch-stages]: https://cloud.google.com/products/#product-launch-stages
 [pub/sub lite]: /google/cloud/pubsublite/README.md
+[resource-manager-tags]: https://cloud.google.com/resource-manager/docs/tags/tags-overview
 [resource-types-with-policies]: https://cloud.google.com/iam/docs/resource-types-with-policies
 [secret manager]: /google/cloud/secretmanager/README.md
+[speech-model-adaptation]: https://cloud.google.com/speech-to-text/docs/adaptation-model
 [storage-dox-link]: https://cloud.google.com/cpp/docs/reference/storage/latest/
 [storage-mocking-link]: https://cloud.google.com/cpp/docs/reference/storage/latest/storage-mocking
 [vcpkg-github]: https://github.com/microsoft/vcpkg

@@ -124,12 +124,13 @@ export GOOGLE_CLOUD_CPP_TEST_HELLO_WORLD_HTTP_URL=""
 # Rest configuration parameters
 export GOOGLE_CLOUD_CPP_REST_TEST_SIGNING_SERVICE_ACCOUNT="kokoro-run@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com"
 
-# To run google/cloud/gameservices' quickstart
-export GOOGLE_CLOUD_CPP_GAMESERVICES_TEST_LOCATION="global"
-export GOOGLE_CLOUD_CPP_GAMESERVICES_TEST_REALM="test-realm"
-
 # To run google/cloud/resourcemanager's quickstart, this is the Cloud C++ team community folder
 export GOOGLE_CLOUD_CPP_RESOURCEMANAGER_TEST_FOLDER="204009073908"
 
 # To run google/cloud/gkemulticloud's quickstart. The service is not available in `us-central1`
 export GOOGLE_CLOUD_CPP_GKEMULTICLOUD_TEST_REGION="us-west1"
+
+# google/cloud/policytroubleshooter's quickstart
+export GOOGLE_CLOUD_CPP_POLICYTROUBLESHOOTER_PRINCIPAL="${GOOGLE_CLOUD_CPP_STORAGE_TEST_SERVICE_ACCOUNT}"
+export GOOGLE_CLOUD_CPP_POLICYTROUBLESHOOTER_RESOURCE="//cloudresourcemanager.googleapis.com/projects/${GOOGLE_CLOUD_PROJECT}"
+export GOOGLE_CLOUD_CPP_POLICYTROUBLESHOOTER_PERMISSION="storage.buckets.get"

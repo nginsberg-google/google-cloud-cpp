@@ -56,12 +56,12 @@ DefaultAutoscalersRestStub::AggregatedListAutoscalers(
                    "/aggregated/autoscalers"),
       {std::make_pair("filter", request.filter()),
        std::make_pair("include_all_scopes",
-                      std::to_string(request.include_all_scopes())),
+                      request.include_all_scopes() ? "1" : "0"),
        std::make_pair("max_results", std::to_string(request.max_results())),
        std::make_pair("order_by", request.order_by()),
        std::make_pair("page_token", request.page_token()),
        std::make_pair("return_partial_success",
-                      std::to_string(request.return_partial_success()))});
+                      request.return_partial_success() ? "1" : "0")});
 }
 
 future<StatusOr<google::cloud::cpp::compute::v1::Operation>>
@@ -98,8 +98,7 @@ DefaultAutoscalersRestStub::GetAutoscalers(
       *service_, rest_context, request,
       absl::StrCat("/compute/v1/projects/", request.project(), "/zones/",
                    request.zone(), "/autoscalers/", request.autoscaler(), ""),
-      {std::make_pair("project", request.project()),
-       std::make_pair("zone", request.zone())});
+      {});
 }
 
 future<StatusOr<google::cloud::cpp::compute::v1::Operation>>
@@ -139,9 +138,8 @@ DefaultAutoscalersRestStub::ListAutoscalers(
        std::make_pair("max_results", std::to_string(request.max_results())),
        std::make_pair("order_by", request.order_by()),
        std::make_pair("page_token", request.page_token()),
-       std::make_pair("project", request.project()),
        std::make_pair("return_partial_success",
-                      std::to_string(request.return_partial_success()))});
+                      request.return_partial_success() ? "1" : "0")});
 }
 
 future<StatusOr<google::cloud::cpp::compute::v1::Operation>>

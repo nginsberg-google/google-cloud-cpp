@@ -29,10 +29,10 @@ GOOGLE_CLOUD_CPP_INLINE_NAMESPACE_BEGIN
 
 DataprocMetastoreLogging::DataprocMetastoreLogging(
     std::shared_ptr<DataprocMetastoreStub> child,
-    TracingOptions tracing_options, std::set<std::string> components)
+    TracingOptions tracing_options, std::set<std::string> const& components)
     : child_(std::move(child)),
       tracing_options_(std::move(tracing_options)),
-      components_(std::move(components)) {}
+      stream_logging_(components.find("rpc-streams") != components.end()) {}
 
 StatusOr<google::cloud::metastore::v1::ListServicesResponse>
 DataprocMetastoreLogging::ListServices(
@@ -239,6 +239,54 @@ DataprocMetastoreLogging::AsyncDeleteBackup(
              std::shared_ptr<grpc::ClientContext> context,
              google::cloud::metastore::v1::DeleteBackupRequest const& request) {
         return child_->AsyncDeleteBackup(cq, std::move(context), request);
+      },
+      cq, std::move(context), request, __func__, tracing_options_);
+}
+
+future<StatusOr<google::longrunning::Operation>>
+DataprocMetastoreLogging::AsyncQueryMetadata(
+    google::cloud::CompletionQueue& cq,
+    std::shared_ptr<grpc::ClientContext> context,
+    google::cloud::metastore::v1::QueryMetadataRequest const& request) {
+  return google::cloud::internal::LogWrapper(
+      [this](
+          google::cloud::CompletionQueue& cq,
+          std::shared_ptr<grpc::ClientContext> context,
+          google::cloud::metastore::v1::QueryMetadataRequest const& request) {
+        return child_->AsyncQueryMetadata(cq, std::move(context), request);
+      },
+      cq, std::move(context), request, __func__, tracing_options_);
+}
+
+future<StatusOr<google::longrunning::Operation>>
+DataprocMetastoreLogging::AsyncMoveTableToDatabase(
+    google::cloud::CompletionQueue& cq,
+    std::shared_ptr<grpc::ClientContext> context,
+    google::cloud::metastore::v1::MoveTableToDatabaseRequest const& request) {
+  return google::cloud::internal::LogWrapper(
+      [this](google::cloud::CompletionQueue& cq,
+             std::shared_ptr<grpc::ClientContext> context,
+             google::cloud::metastore::v1::MoveTableToDatabaseRequest const&
+                 request) {
+        return child_->AsyncMoveTableToDatabase(cq, std::move(context),
+                                                request);
+      },
+      cq, std::move(context), request, __func__, tracing_options_);
+}
+
+future<StatusOr<google::longrunning::Operation>>
+DataprocMetastoreLogging::AsyncAlterMetadataResourceLocation(
+    google::cloud::CompletionQueue& cq,
+    std::shared_ptr<grpc::ClientContext> context,
+    google::cloud::metastore::v1::AlterMetadataResourceLocationRequest const&
+        request) {
+  return google::cloud::internal::LogWrapper(
+      [this](google::cloud::CompletionQueue& cq,
+             std::shared_ptr<grpc::ClientContext> context,
+             google::cloud::metastore::v1::
+                 AlterMetadataResourceLocationRequest const& request) {
+        return child_->AsyncAlterMetadataResourceLocation(
+            cq, std::move(context), request);
       },
       cq, std::move(context), request, __func__, tracing_options_);
 }

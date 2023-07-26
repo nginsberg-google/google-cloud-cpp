@@ -45,7 +45,6 @@ essentialcontacts
 eventarc
 filestore
 functions
-gameservices
 gkebackup
 gkehub
 gkemulticloud
@@ -59,6 +58,7 @@ logging
 managedidentities
 memcache
 metastore
+migrationcenter
 monitoring
 networkconnectivity
 networkmanagement
@@ -74,6 +74,7 @@ privateca
 profiler
 pubsub
 pubsublite
+rapidmigrationassessment
 recaptchaenterprise
 recommender
 redis

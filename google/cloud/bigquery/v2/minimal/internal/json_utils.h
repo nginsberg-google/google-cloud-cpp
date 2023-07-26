@@ -42,6 +42,13 @@ void FromJson(std::chrono::hours& field, nlohmann::json const& j,
 void ToJson(std::chrono::hours const& field, nlohmann::json& j,
             char const* name);
 
+template <typename ResponseType>
+void SafeGetTo(ResponseType& value, nlohmann::json const& j,
+               std::string const& key) {
+  auto i = j.find(key);
+  if (i != j.end()) i->get_to(value);
+}
+
 GOOGLE_CLOUD_CPP_INLINE_NAMESPACE_END
 }  // namespace bigquery_v2_minimal_internal
 }  // namespace cloud

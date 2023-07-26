@@ -26,7 +26,6 @@
 #include "google/cloud/grpc_error_delegate.h"
 #include "google/cloud/internal/algorithm.h"
 #include "google/cloud/internal/retry_loop.h"
-#include "google/cloud/internal/retry_policy.h"
 #include "google/cloud/internal/streaming_read_rpc.h"
 #include "google/cloud/options.h"
 #include <google/protobuf/util/time_util.h>
@@ -1025,6 +1024,12 @@ StatusOr<spanner::CommitResult> ConnectionImpl::CommitImpl(
   request.set_return_commit_stats(params.options.return_stats());
   request.mutable_request_options()->set_priority(
       ProtoRequestPriority(params.options.request_priority()));
+
+  if (params.options.has<spanner::MaxBatchingDelayMsOption>()) {
+    *request.mutable_max_batching_delay() =
+      google::protobuf::util::TimeUtil::MillisecondsToDuration(
+       params.options.get<spanner::MaxBatchingDelayMsOption>());
+  }
 
   // params.options.transaction_tag() was either already used to set
   // ctx.tag (for a library-generated transaction), or it is ignored

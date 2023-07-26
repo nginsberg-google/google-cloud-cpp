@@ -198,6 +198,7 @@ add_library(
     internal/prefix_range_end.h
     internal/readrowsparser.cc
     internal/readrowsparser.h
+    internal/retry_traits.h
     internal/row_reader_impl.h
     internal/rpc_policy_parameters.h
     internal/rpc_policy_parameters.inc
@@ -217,6 +218,7 @@ add_library(
     read_modify_write_rule.h
     resource_names.cc
     resource_names.h
+    retry_policy.h
     row.h
     row_key.h
     row_key_sample.h
@@ -384,6 +386,7 @@ if (BUILD_TESTING)
         internal/legacy_row_reader_test.cc
         internal/logging_data_client_test.cc
         internal/prefix_range_end_test.cc
+        internal/retry_traits_test.cc
         internal/traced_row_reader_test.cc
         legacy_table_test.cc
         metadata_update_policy_test.cc
@@ -510,8 +513,8 @@ google_cloud_cpp_add_pkgconfig(
     "The Google Cloud Bigtable C++ Client Library"
     "Provides C++ APIs to access Google Cloud Bigtable."
     "google_cloud_cpp_grpc_utils"
-    " google_cloud_cpp_common"
-    " google_cloud_cpp_bigtable_protos")
+    "google_cloud_cpp_common"
+    "google_cloud_cpp_bigtable_protos")
 
 # Create and install the CMake configuration files.
 include(CMakePackageConfigHelpers)

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "google/cloud/bigquery/v2/minimal/internal/project.h"
+#include "google/cloud/bigquery/v2/minimal/internal/json_utils.h"
 #include "google/cloud/internal/debug_string.h"
 #include "google/cloud/internal/format_time_point.h"
 
@@ -39,6 +40,28 @@ std::string Project::DebugString(absl::string_view name,
       .SubMessage("project_reference", project_reference)
       .Field("numeric_id", numeric_id)
       .Build();
+}
+
+void to_json(nlohmann::json& j, ProjectReference const& p) {
+  j = nlohmann::json{{"projectId", p.project_id}};
+}
+void from_json(nlohmann::json const& j, ProjectReference& p) {
+  SafeGetTo(p.project_id, j, "projectId");
+}
+
+void to_json(nlohmann::json& j, Project const& p) {
+  j = nlohmann::json{{"kind", p.kind},
+                     {"id", p.id},
+                     {"friendlyName", p.friendly_name},
+                     {"numericId", p.numeric_id},
+                     {"projectReference", p.project_reference}};
+}
+void from_json(nlohmann::json const& j, Project& p) {
+  SafeGetTo(p.kind, j, "kind");
+  SafeGetTo(p.id, j, "id");
+  SafeGetTo(p.friendly_name, j, "friendlyName");
+  SafeGetTo(p.numeric_id, j, "numericId");
+  SafeGetTo(p.project_reference, j, "projectReference");
 }
 
 GOOGLE_CLOUD_CPP_INLINE_NAMESPACE_END

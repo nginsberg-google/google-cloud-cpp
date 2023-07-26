@@ -37,7 +37,7 @@ class DatasetServiceLogging : public DatasetServiceStub {
   ~DatasetServiceLogging() override = default;
   DatasetServiceLogging(std::shared_ptr<DatasetServiceStub> child,
                         TracingOptions tracing_options,
-                        std::set<std::string> components);
+                        std::set<std::string> const& components);
 
   future<StatusOr<google::longrunning::Operation>> AsyncCreateDataset(
       google::cloud::CompletionQueue& cq,
@@ -90,6 +90,12 @@ class DatasetServiceLogging : public DatasetServiceStub {
                    google::cloud::aiplatform::v1::ListSavedQueriesRequest const&
                        request) override;
 
+  future<StatusOr<google::longrunning::Operation>> AsyncDeleteSavedQuery(
+      google::cloud::CompletionQueue& cq,
+      std::shared_ptr<grpc::ClientContext> context,
+      google::cloud::aiplatform::v1::DeleteSavedQueryRequest const& request)
+      override;
+
   StatusOr<google::cloud::aiplatform::v1::AnnotationSpec> GetAnnotationSpec(
       grpc::ClientContext& context,
       google::cloud::aiplatform::v1::GetAnnotationSpecRequest const& request)
@@ -113,7 +119,7 @@ class DatasetServiceLogging : public DatasetServiceStub {
  private:
   std::shared_ptr<DatasetServiceStub> child_;
   TracingOptions tracing_options_;
-  std::set<std::string> components_;
+  bool stream_logging_;
 };  // DatasetServiceLogging
 
 GOOGLE_CLOUD_CPP_INLINE_NAMESPACE_END

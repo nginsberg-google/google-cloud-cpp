@@ -51,12 +51,12 @@ DefaultGlobalOperationsRestStub::AggregatedListGlobalOperations(
                    "/aggregated/operations"),
       {std::make_pair("filter", request.filter()),
        std::make_pair("include_all_scopes",
-                      std::to_string(request.include_all_scopes())),
+                      request.include_all_scopes() ? "1" : "0"),
        std::make_pair("max_results", std::to_string(request.max_results())),
        std::make_pair("order_by", request.order_by()),
        std::make_pair("page_token", request.page_token()),
        std::make_pair("return_partial_success",
-                      std::to_string(request.return_partial_success()))});
+                      request.return_partial_success() ? "1" : "0")});
 }
 
 Status DefaultGlobalOperationsRestStub::DeleteGlobalOperations(
@@ -78,7 +78,7 @@ DefaultGlobalOperationsRestStub::GetGlobalOperations(
       *service_, rest_context, request,
       absl::StrCat("/compute/v1/projects/", request.project(),
                    "/global/operations/", request.operation(), ""),
-      {std::make_pair("project", request.project())});
+      {});
 }
 
 StatusOr<google::cloud::cpp::compute::v1::OperationList>
@@ -95,7 +95,7 @@ DefaultGlobalOperationsRestStub::ListGlobalOperations(
        std::make_pair("order_by", request.order_by()),
        std::make_pair("page_token", request.page_token()),
        std::make_pair("return_partial_success",
-                      std::to_string(request.return_partial_success()))});
+                      request.return_partial_success() ? "1" : "0")});
 }
 
 StatusOr<google::cloud::cpp::compute::v1::Operation>

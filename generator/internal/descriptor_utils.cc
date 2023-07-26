@@ -351,6 +351,38 @@ auto constexpr kDialogflowESSessionEntityTypeDisplayNameCpp = R"""(
  projects/<Project ID>/agent/environments/<Environment ID>/users/<User ID>/sessions/<Session ID>/entityTypes/<Entity Type Display Name>
  @endcode)""";
 
+auto constexpr kLoggingConfigClientProto1 =
+    R"""( The resource name of the link:
+
+   "projects/[PROJECT_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/links/[LINK_ID]"
+   "organizations/[ORGANIZATION_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/links/[LINK_ID]"
+   "billingAccounts/[BILLING_ACCOUNT_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/links/[LINK_ID]"
+   "folders/[FOLDER_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/links/[LINK_ID])""";
+
+auto constexpr kLoggingConfigClientCpp1 =
+    R"""( The resource name of the link:
+
+   "projects/[PROJECT_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/links/[LINK_ID]"
+   "organizations/[ORGANIZATION_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/links/[LINK_ID]"
+   "billingAccounts/[BILLING_ACCOUNT_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/links/[LINK_ID]"
+   "folders/[FOLDER_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/links/[LINK_ID]")""";
+
+auto constexpr kLoggingConfigClientProto2 =
+    R"""( The parent resource whose links are to be listed:
+
+   "projects/[PROJECT_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/links/"
+   "organizations/[ORGANIZATION_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/"
+   "billingAccounts/[BILLING_ACCOUNT_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/"
+   "folders/[FOLDER_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]/)""";
+
+auto constexpr kLoggingConfigClientCpp2 =
+    R"""( The parent resource whose links are to be listed:
+
+   "projects/[PROJECT_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]"
+   "organizations/[ORGANIZATION_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]"
+   "billingAccounts/[BILLING_ACCOUNT_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]"
+   "folders/[FOLDER_ID]/locations/[LOCATION_ID]/buckets/[BUCKET_ID]")""";
+
 ParameterCommentSubstitution substitutions[] = {
     // From dialogflow/cx/v3.
     {kDialogflowCXEnvironmentIdProto1, kDialogflowCXEnvironmentIdCpp1},
@@ -365,6 +397,10 @@ ParameterCommentSubstitution substitutions[] = {
     {kDialogflowESContextIdProto, kDialogflowESContextIdCpp},
     {kDialogflowESSessionEntityTypeDisplayNameProto,
      kDialogflowESSessionEntityTypeDisplayNameCpp},
+
+    // From logging/v2.
+    {kLoggingConfigClientProto1, kLoggingConfigClientCpp1},
+    {kLoggingConfigClientProto2, kLoggingConfigClientCpp2},
 
     // From artifactregistry/v1, where a missing closing quote confuses
     // the Doxygen parser.
@@ -405,9 +441,13 @@ ParameterCommentSubstitution substitutions[] = {
     {"fields. Some eligible fields are:", "fields."},
     {" The allowable fields to\n update are:", ""},
 
-    // This appears in aiplatform/v1/featurestore_service.proto
-    {R"""(`projects/{project}/locations/{location}'`)""",
-     R"""(`projects/{project}/locations/{location}`)"""},
+    // These appear in google/api/servicemanagement/v1/servicemanager.proto
+    // Doxygen gets confused by single quotes in code spans:
+    //    https://www.doxygen.nl/manual/markdown.html#mddox_code_spans
+    // The workaround is to double quote these:
+    {"`filter='status=SUCCESS'`", "``filter='status=SUCCESS'``"},
+    {"`filter='strategy=TrafficPercentStrategy'`",
+     "``filter='strategy=TrafficPercentStrategy'``"},
 
     // Some comments include multiple newlines in a row. We need to preserve
     // these because they are paragraph separators. When used in `@param`
@@ -501,6 +541,37 @@ void SetRetryStatusCodeExpression(VarsDictionary& vars) {
   vars["retry_status_code_expression"] = retry_status_code_expression;
 }
 
+std::string TransientErrorsComment(VarsDictionary const& vars) {
+  auto loc = vars.find("retryable_status_codes");
+  if (loc == vars.end()) return {};
+  std::set<std::string> codes = absl::StrSplit(loc->second, ',');
+
+  loc = vars.find("service_name");
+  auto const service_name = loc == vars.end() ? std::string{} : loc->second;
+
+  std::string comment = R"""(
+ * In this class the following status codes are treated as transient errors:)""";
+
+  auto format = [](absl::string_view code) {
+    auto constexpr kCodeFormat = R"""(
+ * - [`%s`](@ref google::cloud::StatusCode))""";
+    return absl::StrFormat(kCodeFormat, code);
+  };
+  for (auto const& code : codes) {
+    std::pair<std::string, std::string> service_code =
+        absl::StrSplit(code, '.');
+    if (service_code.second.empty()) {
+      comment += format(service_code.first);
+      continue;
+    }
+    if (service_code.first == service_name) {
+      comment += format(service_code.second);
+      continue;
+    }
+  }
+  return comment;
+}
+
 std::string FormatAdditionalPbHeaderPaths(VarsDictionary& vars) {
   std::vector<std::string> additional_pb_header_paths;
   auto iter = vars.find("additional_proto_files");
@@ -514,17 +585,6 @@ std::string FormatAdditionalPbHeaderPaths(VarsDictionary& vars) {
     }
   }
   return absl::StrJoin(additional_pb_header_paths, ",");
-}
-
-std::string FormatResourceAccessor(
-    google::protobuf::Descriptor const& request) {
-  for (int i = 0; i != request.field_count(); ++i) {
-    auto const* field = request.field(i);
-    if (field->has_json_name() && field->json_name() == "__json_request_body") {
-      return absl::StrCat("request.", field->name(), "()");
-    }
-  }
-  return "request";
 }
 
 }  // namespace
@@ -789,6 +849,7 @@ VarsDictionary CreateServiceVars(
       absl::StrCat(vars["product_path"], "internal/",
                    ServiceNameToFilePath(descriptor.name()), "_tracing_stub.h");
   SetRetryStatusCodeExpression(vars);
+  vars["transient_errors_comment"] = TransientErrorsComment(vars);
   SetLongrunningOperationServiceVars(descriptor, vars);
   return vars;
 }
@@ -844,8 +905,6 @@ std::map<std::string, VarsDictionary> CreateMethodVars(
     }
     method_vars["method_name"] = method.name();
     method_vars["method_name_snake"] = CamelCaseToSnakeCase(method.name());
-    method_vars["request_resource"] =
-        FormatResourceAccessor(*method.input_type());
     method_vars["request_type"] =
         ProtoNameToCppName(method.input_type()->full_name());
     method_vars["response_message_type"] = method.output_type()->full_name();
@@ -856,6 +915,8 @@ std::map<std::string, VarsDictionary> CreateMethodVars(
     SetMethodSignatureMethodVars(service, method, emitted_rpcs, omitted_rpcs,
                                  method_vars);
     auto parsed_http_info = ParseHttpExtension(method);
+    method_vars["request_resource"] =
+        FormatRequestResource(*method.input_type(), parsed_http_info);
     SetHttpDerivedMethodVars(parsed_http_info, method, method_vars);
     SetHttpGetQueryParameters(parsed_http_info, method, method_vars);
     service_methods_vars[method.full_name()] = method_vars;

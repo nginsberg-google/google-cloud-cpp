@@ -101,8 +101,7 @@ std::string DiscoveryResource::FormatUrlPath(std::string const& path) {
     current = open + 1;
     auto close = path.find('}', current);
     absl::StrAppend(
-        &output, CamelCaseToSnakeCase(path.substr(current, close - current)),
-        "=", CamelCaseToSnakeCase(path.substr(current, close - current)));
+        &output, CamelCaseToSnakeCase(path.substr(current, close - current)));
     current = close;
   }
   absl::StrAppend(&output, path.substr(current));
@@ -184,6 +183,12 @@ StatusOr<std::string> DiscoveryResource::FormatOAuthScopes() const {
 std::string DiscoveryResource::FormatFilePath(
     std::string const& product_name, std::string const& version,
     std::string const& output_path) const {
+  if (output_path.empty()) {
+    return absl::StrJoin(
+        {std::string("google/cloud"), product_name, CamelCaseToSnakeCase(name_),
+         version, absl::StrCat(CamelCaseToSnakeCase(name_), ".proto")},
+        "/");
+  }
   return absl::StrJoin({output_path, std::string("google/cloud"), product_name,
                         CamelCaseToSnakeCase(name_), version,
                         absl::StrCat(CamelCaseToSnakeCase(name_), ".proto")},

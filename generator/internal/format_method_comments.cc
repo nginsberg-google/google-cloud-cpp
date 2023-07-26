@@ -125,7 +125,14 @@ std::string FormatMethodComments(
   }
   std::string doxygen_formatted_function_comments =
       absl::StrReplaceAll(method_source_location.leading_comments,
-                          {{"\n", "\n  ///"}, {"$", "$$"}});
+                          {
+                              {"\n", "\n  ///"},
+                              {"$", "$$"},
+                              // TODO(#12190) - track whether this substitution
+                              // is used. From logging/v2
+                              {R"""(Gets a view on a log bucket..)""",
+                               R"""(Gets a view on a log bucket.)"""},
+                          });
 
   auto const options_comment = std::string{
       R"""(  /// @param opts Optional. Override the class-level options, such as retry and

@@ -20,7 +20,6 @@
 #define GOOGLE_CLOUD_CPP_GOOGLE_CLOUD_AIPLATFORM_V1_DATASET_CONNECTION_IDEMPOTENCY_POLICY_H
 
 #include "google/cloud/idempotency.h"
-#include "google/cloud/internal/retry_policy.h"
 #include "google/cloud/version.h"
 #include <google/cloud/aiplatform/v1/dataset_service.grpc.pb.h>
 #include <memory>
@@ -67,6 +66,9 @@ class DatasetServiceConnectionIdempotencyPolicy {
 
   virtual google::cloud::Idempotency ListSavedQueries(
       google::cloud::aiplatform::v1::ListSavedQueriesRequest request);
+
+  virtual google::cloud::Idempotency DeleteSavedQuery(
+      google::cloud::aiplatform::v1::DeleteSavedQueryRequest const& request);
 
   virtual google::cloud::Idempotency GetAnnotationSpec(
       google::cloud::aiplatform::v1::GetAnnotationSpecRequest const& request);

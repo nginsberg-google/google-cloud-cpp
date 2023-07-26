@@ -3445,6 +3445,90 @@ void DeleteUsingDmlReturning(google::cloud::spanner::Client client) {
 }
 // [END spanner_delete_dml_returning]
 
+// [START spanner_create_table_with_foreign_key_delete_cascade]
+void CreateTableWithForeignKeyDeleteCascade(
+    google::cloud::spanner_admin::DatabaseAdminClient client,
+    std::string const& project_id, std::string const& instance_id,
+    std::string const& database_id) {
+  google::cloud::spanner::Database database(project_id, instance_id,
+                                            database_id);
+  std::vector<std::string> statements;
+  statements.emplace_back(R"""(
+      CREATE TABLE Customers (
+          CustomerId   INT64 NOT NULL,
+          CustomerName STRING(62) NOT NULL
+      ) PRIMARY KEY (CustomerId))""");
+  statements.emplace_back(R"""(
+      CREATE TABLE ShoppingCarts (
+          CartId       INT64 NOT NULL,
+          CustomerId   INT64 NOT NULL,
+          CustomerName STRING(62) NOT NULL,
+          CONSTRAINT FKShoppingCartsCustomerId
+              FOREIGN KEY (CustomerId)
+              REFERENCES Customers (CustomerId)
+              ON DELETE CASCADE
+      ) PRIMARY KEY (CartId))""");
+  auto metadata =
+      client.UpdateDatabaseDdl(database.FullName(), std::move(statements))
+          .get();
+  google::cloud::spanner_testing::LogUpdateDatabaseDdl(  //! TODO(#4758)
+      client, database, metadata.status());              //! TODO(#4758)
+  if (!metadata) throw std::move(metadata).status();
+  std::cout << "Created Customers and ShoppingCarts tables"
+            << " with FKShoppingCartsCustomerId foreign key constraint"
+            << " on " << database.FullName() << "\n";
+}
+// [END spanner_create_table_with_foreign_key_delete_cascade]
+
+// [START spanner_alter_table_with_foreign_key_delete_cascade]
+void AlterTableWithForeignKeyDeleteCascade(
+    google::cloud::spanner_admin::DatabaseAdminClient client,
+    std::string const& project_id, std::string const& instance_id,
+    std::string const& database_id) {
+  google::cloud::spanner::Database database(project_id, instance_id,
+                                            database_id);
+  std::vector<std::string> statements;
+  statements.emplace_back(R"""(
+      ALTER TABLE ShoppingCarts
+      ADD CONSTRAINT FKShoppingCartsCustomerName
+          FOREIGN KEY (CustomerName)
+          REFERENCES Customers(CustomerName)
+          ON DELETE CASCADE)""");
+  auto metadata =
+      client.UpdateDatabaseDdl(database.FullName(), std::move(statements))
+          .get();
+  google::cloud::spanner_testing::LogUpdateDatabaseDdl(  //! TODO(#4758)
+      client, database, metadata.status());              //! TODO(#4758)
+  if (!metadata) throw std::move(metadata).status();
+  std::cout << "Altered ShoppingCarts table"
+            << " with FKShoppingCartsCustomerName foreign key constraint"
+            << " on " << database.FullName() << "\n";
+}
+// [END spanner_alter_table_with_foreign_key_delete_cascade]
+
+// [START spanner_drop_foreign_key_constraint_delete_cascade]
+void DropForeignKeyConstraintDeleteCascade(
+    google::cloud::spanner_admin::DatabaseAdminClient client,
+    std::string const& project_id, std::string const& instance_id,
+    std::string const& database_id) {
+  google::cloud::spanner::Database database(project_id, instance_id,
+                                            database_id);
+  std::vector<std::string> statements;
+  statements.emplace_back(R"""(
+      ALTER TABLE ShoppingCarts
+      DROP CONSTRAINT FKShoppingCartsCustomerName)""");
+  auto metadata =
+      client.UpdateDatabaseDdl(database.FullName(), std::move(statements))
+          .get();
+  google::cloud::spanner_testing::LogUpdateDatabaseDdl(  //! TODO(#4758)
+      client, database, metadata.status());              //! TODO(#4758)
+  if (!metadata) throw std::move(metadata).status();
+  std::cout << "Altered ShoppingCarts table"
+            << " to drop FKShoppingCartsCustomerName foreign key constraint"
+            << " on " << database.FullName() << "\n";
+}
+// [END spanner_drop_foreign_key_constraint_delete_cascade]
+
 void ExampleStatusOr(google::cloud::spanner::Client client) {
   //! [example-status-or]
   namespace spanner = ::google::cloud::spanner;
@@ -3867,6 +3951,22 @@ void QueryInformationSchemaDatabaseOptions(
 }
 // [END spanner_query_information_schema_database_options]
 
+// [START spanner_commit_with_batching_delay]
+void UpdateDataWithBatchingDelay(google::cloud::spanner::Client client) {
+  namespace spanner = ::google::cloud::spanner;
+  Options ops;
+  ops.set<MaxBatchingDelayMsOption>(100);
+  auto commit_result = client.Commit(spanner::Mutations{
+      spanner::UpdateMutationBuilder("Albums",
+                                     {"SingerId", "AlbumId", "MarketingBudget"})
+          .EmplaceRow(1, 1, 100000)
+          .EmplaceRow(2, 2, 500000)
+          .Build()}, ops);
+  if (!commit_result) throw std::move(commit_result).status();
+  std::cout << "Update was successful [spanner_update_data]\n";
+}
+// [END spanner_set_batching_delay]
+
 std::string Basename(absl::string_view name) {
   auto last_sep = name.find_last_of("/\\");
   if (last_sep != absl::string_view::npos) name.remove_prefix(last_sep + 1);
@@ -4063,6 +4163,8 @@ int RunOneCommand(std::vector<std::string> argv) {
       make_command_entry("make-delete-mutation", MakeDeleteMutation),
       make_command_entry("query-information-schema-database-options",
                          QueryInformationSchemaDatabaseOptions),
+      make_command_entry("spanner-commit-with-batching-delay",
+			 UpdateDataWithBatchingDelay),
   };
 
   static std::string usage_msg = [&argv, &commands] {
@@ -4783,6 +4885,25 @@ void RunAll(bool emulator) {
   if (!emulator) {
     SampleBanner("spanner_query_information_schema_database_options");
     QueryInformationSchemaDatabaseOptions(client);
+  }
+
+  if (!emulator) {
+    SampleBanner("spanner_commit_with_batching_delay");
+    UpdateDataWithBatchingDelay(client);
+  }
+
+  if (!emulator) {
+    SampleBanner("spanner_create_table_with_foreign_key_delete_cascade");
+    CreateTableWithForeignKeyDeleteCascade(database_admin_client, project_id,
+                                           instance_id, database_id);
+
+    SampleBanner("spanner_alter_table_with_foreign_key_delete_cascade");
+    AlterTableWithForeignKeyDeleteCascade(database_admin_client, project_id,
+                                          instance_id, database_id);
+
+    SampleBanner("spanner_drop_foreign_key_constraint_delete_cascade");
+    DropForeignKeyConstraintDeleteCascade(database_admin_client, project_id,
+                                          instance_id, database_id);
   }
 
   SampleBanner("spanner_drop_database");

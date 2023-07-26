@@ -57,12 +57,12 @@ DefaultResourcePoliciesRestStub::AggregatedListResourcePolicies(
                    "/aggregated/resourcePolicies"),
       {std::make_pair("filter", request.filter()),
        std::make_pair("include_all_scopes",
-                      std::to_string(request.include_all_scopes())),
+                      request.include_all_scopes() ? "1" : "0"),
        std::make_pair("max_results", std::to_string(request.max_results())),
        std::make_pair("order_by", request.order_by()),
        std::make_pair("page_token", request.page_token()),
        std::make_pair("return_partial_success",
-                      std::to_string(request.return_partial_success()))});
+                      request.return_partial_success() ? "1" : "0")});
 }
 
 future<StatusOr<google::cloud::cpp::compute::v1::Operation>>
@@ -101,8 +101,7 @@ DefaultResourcePoliciesRestStub::GetResourcePolicies(
       absl::StrCat("/compute/v1/projects/", request.project(), "/regions/",
                    request.region(), "/resourcePolicies/",
                    request.resource_policy(), ""),
-      {std::make_pair("project", request.project()),
-       std::make_pair("region", request.region())});
+      {});
 }
 
 StatusOr<google::cloud::cpp::compute::v1::Policy>
@@ -116,10 +115,8 @@ DefaultResourcePoliciesRestStub::GetIamPolicy(
                    request.region(), "/resourcePolicies/", request.resource(),
                    "/getIamPolicy"),
       {std::make_pair(
-           "options_requested_policy_version",
-           std::to_string(request.options_requested_policy_version())),
-       std::make_pair("project", request.project()),
-       std::make_pair("region", request.region())});
+          "options_requested_policy_version",
+          std::to_string(request.options_requested_policy_version()))});
 }
 
 future<StatusOr<google::cloud::cpp::compute::v1::Operation>>
@@ -161,9 +158,8 @@ DefaultResourcePoliciesRestStub::ListResourcePolicies(
        std::make_pair("max_results", std::to_string(request.max_results())),
        std::make_pair("order_by", request.order_by()),
        std::make_pair("page_token", request.page_token()),
-       std::make_pair("project", request.project()),
        std::make_pair("return_partial_success",
-                      std::to_string(request.return_partial_success()))});
+                      request.return_partial_success() ? "1" : "0")});
 }
 
 StatusOr<google::cloud::cpp::compute::v1::Policy>
